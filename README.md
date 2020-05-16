@@ -1,11 +1,27 @@
-docker-compose up -d
+# UdemyのLaravel講座
+※ Dockerの使用やvueの導入など少し環境が変わってます。
+(動画では、環境がMAMPでUIはBootStrap)
 
-docker-compose exec app bash
+[PHPからLaravelまで はじめてのプログラミング入門 - udemy](https://www.udemy.com/share/102HImBksceVdWTHw=/)
+プロゲートの様に駆け足気味で学ぶにはちょうどいい量
 
-- 
+## docker-composeのコマンド(よく使うやつ)
+- コンテナ起動<br>
+`docker-compose up -d`
+
+- コンテナ停止<br>
+`docker-compose down`
+
+- appコンテナに入る(artisanやcomposerのコマンドを叩く時)<br>
+`docker-compose exec app bash`
+
+- リスタート(nginxでよく使う)<br>
+`docker-compose restart (コンテナ名など)`
+
+- laravelプロジェクト作成<br>
 `composer create-project --prefer-dist laravel/laravel=6.x`
 
-- ビルドのし直し
+- ビルドのやり直し<br>
 `docker-compose up -d --build`
 
 ### やったこと
@@ -65,7 +81,7 @@ php artisan migrate
 ```
 
 
-#### DBの簡易接続
+#### DBの簡易データ登録
 ```
 php artisan tinker
 ```
