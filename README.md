@@ -26,13 +26,15 @@
 
 ### やったこと
 - Modelの作成 (Models/Test.php)
-- migrationの作成、実行 (2020_05_16_131636_create_tests_table.php)
+- migrationの作成、実行 
+  (2020_05_16_131636_create_tests_table.php, 2020_05_20_153001_contact_forms_table,2020_05_20_154435_add_title_to_contact_forms_table)
 - tinkerでのデータ挿入
 - Routing -> Controller(viewにデータを渡す) -> Viewの表示<br>
   (Models/Test.php, TestController ,tests/test.blade.php)
 - コレクション(chunkを使ってみた)
 - クエリビルダ(を使ってみた)
 - ファサード確認(config/app.php)
+- バリデーションの設定(https://github.com/minoryorg/laravel-resources-lang-ja)
 
 ## 規則
 - modelは単数、マイグレートファイルは複数形
@@ -59,8 +61,8 @@ php artisan route:list
 ##### Controller
 
 ```
-# コントローラー作成
-php artisan make:controller
+# コントローラー作成(resourceはRESTfulなコントローラー)
+php artisan make:controller ~Controller [--resource]
 
 ```
 
@@ -74,10 +76,16 @@ php artisan make:model モデル名 [-mc]
 #### DB
 
 ```
-# マイグレートファイル作成
+# マイグレートファイル作成(tableオプションは、テーブルにカラムを追加する際に使用)
 php artisan make:migration ファイル名 [--table=テーブル名]
 # テーブル作成
-php artisan migrate 
+php artisan migrate
+# マイグレートを一つ前に戻す(stepオプションは、どこまで戻すか指定する際に使用)
+php artisan migrate:rollback [--step=3]
+# テーブルを全削除
+php artisan migrate:reset
+# マイグレートの履歴を見る
+php artisan migrate:status
 ```
 
 
