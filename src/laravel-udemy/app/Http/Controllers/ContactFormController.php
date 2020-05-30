@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Models\ContactForm;
 
 class ContactFormController extends Controller
 {
@@ -13,8 +15,22 @@ class ContactFormController extends Controller
      */
     public function index()
     {
-        //
-        return view('contact.index');
+        // 複数のデータを取る
+
+        /* 
+        Eloquent ORマッパー
+        $contacts = ContactForm::all();
+        */
+
+        // クエリビルダー
+        $contacts = DB::table('contact_forms')
+        ->select('id', 'title', 'your_name', 'created_at')
+        ->orderBy('created_at', 'asc')
+        ->get();
+
+        // dd($contacts);
+
+        return view('contact.index', compact('contacts'));
     }
 
     /**
@@ -36,17 +52,22 @@ class ContactFormController extends Controller
      */
     public function store(Request $request)
     {
-        // $_POST => $request(DI)
-        $your_name = $request->input('your_name');
-        $title = $request->input('title');
-        $email = $request->input('email');
-        $url = $request->input('url');
-        $gender = $request->input('gender');
-        $age = $request->input('age');
-        $contact = $request->input('contact');
+        // 登録
+        $contact = new ContactForm();
 
-        //
-        dd($your_name);
+        // $_POST => $request(DI)
+        $contact->your_name = $request->input('your_name');
+        $contact->title = $request->input('title');
+        $contact->email = $request->input('email');
+        $contact->url = $request->input('url');
+        $contact->gender = $request->input('gender');
+        $contact->age = $request->input('age');
+        $contact->contact = $request->input('contact');
+
+        // DBに保存
+        $contact->save();
+
+        return redirect('contact/index');
     }
 
     /**
@@ -57,7 +78,36 @@ class ContactFormController extends Controller
      */
     public function show($id)
     {
-        //
+        // データを一つだけ取得
+        $contact = ContactForm::find($id);
+
+        $gender = $contact->gender === 0 ? '男性':'女性';
+
+        switch($contact->age){
+            case 1:
+                $age = '~19歳';
+                break;
+            case 2:
+                $age = '20~29歳';
+                break;
+            case 3:
+                $age = '30~39歳';
+                break;
+            case 4:
+                $age = "40~49歳";
+                break;
+            case 5:
+                $age = "50~59歳";
+                break;
+            case 6:
+                $age = '60歳~';
+                break;
+            default:
+                $age = 'error';
+                break;
+        }
+
+        return view('contact.show', compact('contact', 'gender', 'age'));
     }
 
     /**
@@ -68,7 +118,10 @@ class ContactFormController extends Controller
      */
     public function edit($id)
     {
-        //
+        // データの編集
+        $contact = ContactForm::find($id);
+
+        return view('contact.edit', compact('contact'));
     }
 
     /**
@@ -80,7 +133,22 @@ class ContactFormController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        // データの更新
+        $contact = ContactForm::find($id);
+
+        // 上書き
+        $contact->your_name = $request->input('your_name');
+        $contact->title = $request->input('title');
+        $contact->email = $request->input('email');
+        $contact->url = $request->input('url');
+        $contact->gender = $request->input('gender');
+        $contact->age = $request->input('age');
+        $contact->contact = $request->input('contact');
+
+        // DBに保存
+        $contact->save();
+
+        return redirect('contact/index');
     }
 
     /**
@@ -91,6 +159,10 @@ class ContactFormController extends Controller
      */
     public function destroy($id)
     {
-        //
+        // データを削除
+        $contact = ContactForm::find($id);
+        $contact->delete();
+
+        return redirect('contact/index');
     }
 }
