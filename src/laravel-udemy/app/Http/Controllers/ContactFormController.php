@@ -27,8 +27,10 @@ class ContactFormController extends Controller
         // クエリビルダー
         $contacts = DB::table('contact_forms')
         ->select('id', 'title', 'your_name', 'created_at')
-        ->orderBy('created_at', 'asc')
-        ->get();
+        ->orderBy('id', 'asc')
+        ->paginate(10); // 20件ずつ取得(ページネーション)
+        // シンプルな方のページネーション simplePagenate
+        // ->get() //すべて取得
 
         // dd($contacts);
 

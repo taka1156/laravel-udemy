@@ -37,6 +37,7 @@
 - バリデーションの設定(https://github.com/minoryorg/laravel-resources-lang-ja)
 - フォームリクエストのバリデーション
 - Usersテーブルのシーダーの設定
+- ページネーションの作成
 
 ## 規則
 - modelは単数、マイグレートファイルは複数形
