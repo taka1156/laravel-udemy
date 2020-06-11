@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\ContactForm;
 use App\Services\CheckFormData;
+use App\Services\SplitSearchData;
 use App\Http\Requests\StoreContactForm;
 
 class ContactFormController extends Controller
@@ -15,24 +16,25 @@ class ContactFormController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        // 複数のデータを取る
+        // 検索機能の追加
+        $search = $request->input('search');
 
-        /* 
-        Eloquent ORマッパー
-        $contacts = ContactForm::all();
-        */
+        $query = DB::table('contact_forms');
 
-        // クエリビルダー
-        $contacts = DB::table('contact_forms')
-        ->select('id', 'title', 'your_name', 'created_at')
-        ->orderBy('id', 'asc')
-        ->paginate(10); // 20件ずつ取得(ページネーション)
-        // シンプルな方のページネーション simplePagenate
-        // ->get() //すべて取得
+        if ($search !== null) {
+            $searches = SplitSearchData::splitSeach($search);
 
-        // dd($contacts);
+            // 単語をループで回す
+            foreach($searches as $value) {
+                $query->where('your_name', 'like', '%'.$value.'%');
+            }
+        }
+
+        $query->select('id', 'title', 'your_name', 'created_at');
+        $query->orderBy('id', 'asc');
+        $contacts = $query->paginate(10);
 
         return view('contact.index', compact('contacts'));
     }
